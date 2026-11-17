@@ -10,13 +10,13 @@ Como variante original del juego, hemos introducido un sistema de mecánicas con
 
 ## Integrantes del Grupo
 
-| Integrante | 
-| :--- | :--- | :--- |
+| Integrante |
+| :--- |
 | Cabral, Lautaro |
-| Gonzales, Luis | 
 | Carballo Ucero, Bautista |
-| Pedrozo Rios, Tiago Federico | 
-| De Bortoli, Lautaro Agustín | 
+| De Bortoli, Lautaro Agustín |
+| Gonzales, Luis |
+| Pedrozo Rios, Tiago Federico |
 
 
 
