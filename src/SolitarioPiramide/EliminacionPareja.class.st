@@ -14,7 +14,6 @@ EliminacionPareja >> cantidadRequerida [
 ]
 
 { #category : 'operation' }
-EliminacionPareja >> esValidaPara: unaColeccionDeCartas [
-	^ (unaColeccionDeCartas size = self cantidadRequerida) 
-		and: [ (unaColeccionDeCartas first valor + unaColeccionDeCartas second valor) = 13 ].
+EliminacionPareja >> esValidaPara: unasCartas [
+	^ unasCartas size = 2 and: [ unasCartas first suma13Con: unasCartas second ].
 ]

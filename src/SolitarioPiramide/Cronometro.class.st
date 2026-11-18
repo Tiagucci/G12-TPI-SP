@@ -1,6 +1,7 @@
 "
 Cronometro que al terminar se pierde, se puede pausar y reanudar y modificar con el uso de las K
 -TERMINAR-LC
+18/11 agregado las cosas para el 67
 "
 Class {
 	#name : 'Cronometro',
@@ -8,11 +9,20 @@ Class {
 	#instVars : [
 		'tiempoLimite',
 		'tiempoTranscurrido',
-		'corriendo'
+		'corriendo',
+		'factorVelocidad',
+		'segundosRalentizados'
 	],
 	#category : 'SolitarioPiramide',
 	#package : 'SolitarioPiramide'
 }
+
+{ #category : 'as yet unclassified' }
+Cronometro >> activarRalentizacion: duracionRealSeconds factor: unFactor [
+	"Ejemplo: 6 segundos reales a factor 0.5 hacen que pasen solo 3 segundos de juego"
+	segundosRalentizados := duracionRealSeconds.
+	factorVelocidad := unFactor.
+]
 
 { #category : 'initialization' }
 Cronometro >> agregarTiempo: unosSegundos [
@@ -23,15 +33,24 @@ Cronometro >> agregarTiempo: unosSegundos [
 
 { #category : 'initialization' }
 Cronometro >> avanzar: unosSegundos [
-	"Incrementa el tiempo solo si el reloj está activo y no se agotó"
-	(corriendo and: [ self seAgoto not ]) ifTrue: [
-		tiempoTranscurrido := (tiempoTranscurrido + unosSegundos) min: tiempoLimite.
+	(corriendo and: [ self seAgoto not ]) ifFalse: [ ^ self ].
+	
+	tiempoTranscurrido := (tiempoTranscurrido + (unosSegundos * factorVelocidad)) min: tiempoLimite.
+	
+	self estaRalentizado ifTrue: [
+		segundosRalentizados := (segundosRalentizados - unosSegundos) max: 0.
+		segundosRalentizados = 0 ifTrue: [ factorVelocidad := 1.0 ].
 	].
 ]
 
 { #category : 'accessing' }
 Cronometro >> corriendo [
 	^ corriendo.
+]
+
+{ #category : 'as yet unclassified' }
+Cronometro >> estaRalentizado [
+	^ segundosRalentizados > 0.
 ]
 
 { #category : 'initialization' }
@@ -43,9 +62,11 @@ Cronometro >> iniciar [
 { #category : 'initialization' }
 Cronometro >> initialize [
 	super initialize.
-	tiempoLimite := 300. "5 minutos por defecto (300 segundos)"
+	tiempoLimite := 300.
 	tiempoTranscurrido := 0.
 	corriendo := false.
+	factorVelocidad := 1.0.
+	segundosRalentizados := 0.
 ]
 
 { #category : 'initialization' }
@@ -75,7 +96,8 @@ Cronometro >> tiempoLimite: unosSegundos [
 
 { #category : 'initialization' }
 Cronometro >> tiempoRestante [
-	^ (tiempoLimite - tiempoTranscurrido) max: 0.
+	"Devuelve entero redondeado para mostrar limpio en pantalla"
+	^ ((tiempoLimite - tiempoTranscurrido) max: 0) ceiling.
 ]
 
 { #category : 'accessing' }

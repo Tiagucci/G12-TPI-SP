@@ -14,7 +14,6 @@ EliminacionRey >> cantidadRequerida [
 ]
 
 { #category : 'operation' }
-EliminacionRey >> esValidaPara: unaColeccionDeCartas [
-	^ (unaColeccionDeCartas size = self cantidadRequerida) 
-		and: [ unaColeccionDeCartas first esRey ].
+EliminacionRey >> esValidaPara: unasCartas [
+	^ unasCartas size = 1 and: [ unasCartas first esRey ].
 ]

@@ -7,3 +7,14 @@ Class {
 	#category : 'SolitarioPiramide',
 	#package : 'SolitarioPiramide'
 }
+
+{ #category : 'as yet unclassified' }
+Eliminacion >> aplicarEfectoExtraEn: unaPartida [
+	"Por defecto las eliminaciones normales no disparan efectos especiales"
+	^ self.
+]
+
+{ #category : 'operation' }
+Eliminacion >> esValidaPara: unasCartas [
+	self subclassResponsibility.
+]
