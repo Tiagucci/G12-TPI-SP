@@ -19,6 +19,11 @@ MazoAuxiliar >> cartaVisible [
 	^ descarte last.
 ]
 
+{ #category : 'as yet unclassified' }
+MazoAuxiliar >> consumirReciclaje [
+	reciclajesRestantes := (reciclajesRestantes - 1) max: 0.
+]
+
 { #category : 'initialize' }
 MazoAuxiliar >> initialize [
 	super initialize.
