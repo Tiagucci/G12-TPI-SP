@@ -1,83 +1,42 @@
-# Solitario de Pirámide (Pharo / Smalltalk)
+# Solitario de Pirámide
 
-Trabajo integrador — 5º Instancia de Evaluación, Paradigmas de Programación  
-UTN FRRe · Ingeniería en Sistemas de Información · Grupo 2 · Comisión: _[1 o 2]_
+Este proyecto es una implementación en Smalltalk del clásico juego de cartas "Solitario de Pirámide", desarrollado como trabajo integrador para la asignatura Paradigmas de Programación (Universidad Tecnológica Nacional).
 
-## Descripción
+## Característica propia (Innovación)
+**Sistema de Power-Ups mediante cartas y combinaciones especiales**
+Como variante original del juego, hemos introducido un sistema de mecánicas con efectos especiales (Power-Ups) que alteran el transcurso de la partida:
+* **Efectos del Rey (K):** Al eliminar un Rey (que normalmente vale 13 por sí solo), se activará un efecto especial aleatorio. Esto puede resultar en una ventaja (como sumar puntos extra o añadir tiempo al cronómetro) o en una penalización (restar puntos o disminuir el tiempo).
+* **Combinación 6 + 7:** Al lograr esta combinación específica para sumar 13, también se desencadenarán efectos especiales similares a los de la carta K, premiando al jugador por realizar esta unión exacta.
 
-Implementación en Smalltalk (Pharo) del juego **Solitario de Pirámide**: se debe eliminar
-todas las cartas de una pirámide antes de que se agote el tiempo, combinando parejas de
-cartas libres cuya suma sea 13 (J = 11, Q = 12, K = 13 se elimina sola). Cuando no hay
-combinaciones posibles, se recurre al mazo auxiliar.
+## Integrantes del Grupo
 
-### Característica propia
-_[Completar: descripción de la variante/aporte original del grupo]_
+| Integrante |
+| :--- |
+| Cabral, Lautaro |
+| Carballo Ucero, Bautista |
+| De Bortoli, Lautaro Agustín |
+| Gonzales, Luis |
+| Pedrozo Rios, Tiago Federico |
 
-## Integrantes
 
-| Integrante | Usuario GitHub | Responsabilidad de referencia |
-|------------|----------------|-------------------------------|
-| _Nombre_   | _@usuario_     | _Modelado / Pharo / Paper / Pruebas / Entregas_ |
-| _Nombre_   | _@usuario_     |                               |
-| _Nombre_   | _@usuario_     |                               |
 
-## Requisitos
-
-- Pharo **_[versión, ej. 12.0]_** (indicar la versión exacta; también va en el paper)
-- No requiere conexión a internet ni paquetes externos _[confirmar]_
+## Requisitos Técnicos
+* **Entorno:** Pharo 13.0 (versión de 64 bits recomendada).
+* **Dependencias:** El proyecto es completamente autocontenido. No requiere conexión a internet para su ejecución ni la instalación de paquetes externos adicionales.
 
 ## Instalación
-
-1. Clonar este repositorio.
-2. En Pharo, abrir **Iceberg** → *Import* → *Existing repository from disk* y seleccionar la carpeta clonada.
-   (Alternativa: *Clone from github.com* con la URL del repositorio.)
-3. Cargar el paquete `PiramideSolitario` desde Iceberg (*Load package*).
-
-## Ejecución
-
-En un Playground de Pharo:
-
-```smalltalk
-"Ajustar el nombre de la clase de entrada según la implementación final"
-PiramideSolitarioApp new open.
-```
-
-## Tests
-
-Desde el Test Runner de Pharo, ejecutar los tests del paquete `PiramideSolitario-Tests`.
-
-## Estructura del repositorio
-
-```
-src/
-  PiramideSolitario/          Lógica del dominio (cartas, pirámide, reglas, puntaje)
-  PiramideSolitario-UI/       Interfaz gráfica (Morphic), separada del dominio
-  PiramideSolitario-Tests/    Pruebas unitarias (SUnit)
-docs/
-  bitacora.md                 Registro de reuniones, tareas y decisiones
-  diagramas/                  Diagramas de clases (versión final y cambios relevantes)
-README.md
-```
+1. Clonar este repositorio en tu máquina local.
+2. Abrir **Pharo 13.0**.
+3. Abrir la herramienta **Iceberg** (desde el World Menu o atajo rápido).
+4. Hacer clic en **Add** y seleccionar **Import from existing clone**.
+5. Seleccionar el directorio raíz donde se clonó el repositorio.
+6. Una vez agregado a Iceberg, hacer clic derecho sobre el proyecto, seleccionar **Packages**, luego elegir el paquete `SolitarioPiramide` y hacer clic en **Load**.
 
 ## Reglas implementadas
+* **Disposición:** La pirámide se arma en filas superpuestas. Una carta se considera **libre** si no está cubierta por ninguna carta de la fila inferior.
+* **Eliminación clásica:** Se eliminan parejas de cartas libres cuya suma sea exactamente **13**. El Rey (K) vale 13 y se elimina de forma individual.
+* **Mazo auxiliar:** Permite descubrir nuevas cartas cuando el jugador no encuentra combinaciones viables en la pirámide.
+* **Condiciones de victoria/derrota:** El juego lleva el registro del puntaje obtenido y cuenta con un límite de tiempo (cronómetro) que añade presión al jugador. Se registra además la **mejor puntuación**.
+* **Power-Ups (Mecánica propia):** Modificación del puntaje y el tiempo al eliminar Reyes (K) o realizar la combinación de 6 + 7.
 
-- La pirámide se arma en filas superpuestas; una carta está **libre** si no está cubierta por otras.
-- Se eliminan **parejas de cartas libres que suman 13**; el **K** se elimina individualmente.
-- El **mazo auxiliar** permite descubrir nuevas cartas cuando no hay combinaciones.
-- Hay **puntaje**, **límite de tiempo** y **mejor puntuación** registrada.
-- _[Completar con la variante propia]_
-
-## Flujo de trabajo del equipo
-
-- Rama principal: `main`. Cada integrante trabaja en una rama propia (`feature/nombre-tema`) y se integra por Pull Request.
-- Commits pequeños y frecuentes, con mensajes descriptivos (ej.: `Agrega clase Carta con tests`).
-- Tablero de tareas: _[enlace a Trello / Notion / GitHub Projects]_
-
-## Entregas
-
-| Fecha | Entrega |
-|-------|---------|
-| 09/11 – 13/11 | Consultas con los profes de práctica |
-| 15/11 | Avance: diseño inicial, decisiones y desarrollo hasta el momento |
-| 24/11 23:59 | Entrega final (.zip: código + README, informe PDF, diapositivas) |
-| 25/11 – 03/12 | Exposiciones |
+*Aun queda por implementar las clases graficas, así como la clase partida que combina toda la lógica para el juego. 
