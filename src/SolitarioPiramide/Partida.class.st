@@ -1,3 +1,6 @@
+"
+Representa una partida del juego y gestiona su estado y reglas.
+"
 Class {
 	#name : 'Partida',
 	#superclass : 'Object',
@@ -106,19 +109,18 @@ Partida >> hayMovimientosPosibles [
 
 { #category : 'initialization' }
 Partida >> iniciar [
-	puntaje reiniciarRacha.
+puntaje := Puntaje new.
+	cronometro := Cronometro new.
 	seleccion removeAll.
 	ultimoEfectoRey := nil.
 	estado := #jugando.
-
 	mazoAuxiliar := MazoAuxiliar crearCompleto.
 	mazoAuxiliar barajar.
-
 	piramide := Piramide new.
 	piramide armarCon: mazoAuxiliar.
-
 	cronometro iniciar.
 	self changed.
+
 ]
 
 { #category : 'initialization' }

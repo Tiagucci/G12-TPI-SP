@@ -25,7 +25,7 @@ RegistroRecords >> archivo: unFileReference [
 	archivo := unFileReference.
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'operation' }
 RegistroRecords >> cargar [
 	"Lee el puntaje histórico desde el archivo si existe; caso contrario inicia en 0"
 	archivo exists
@@ -37,7 +37,7 @@ RegistroRecords >> cargar [
 			mejorPuntaje := 0 ].
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'operation' }
 RegistroRecords >> guardar [
 	"Sobrescribe el archivo con el nuevo mejor puntaje"
 	archivo ensureDelete.

@@ -1,3 +1,6 @@
+"
+Clase utilizada para verificar si una carta es Rey (K)
+"
 Class {
 	#name : 'EfectoRey',
 	#superclass : 'Object',
@@ -23,7 +26,7 @@ EfectoRey class >> aleatorio [
 	^ opciones atRandom.
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 EfectoRey >> aplicarEn: unaPartida [
 	self subclassResponsibility.
 ]

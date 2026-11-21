@@ -1,6 +1,9 @@
+"
+Clase utilizada para verificar y efectivizar el efecto Rey (eliminar sola)
+"
 Class {
 	#name : 'Eliminacion67',
-	#superclass : 'Eliminacion',
+	#superclass : 'EliminacionPareja',
 	#category : 'SolitarioPiramide',
 	#package : 'SolitarioPiramide'
 }
@@ -16,4 +19,5 @@ Eliminacion67 >> esValidaPara: unasCartas [
 	(super esValidaPara: unasCartas) ifFalse: [ ^ false ].
 	valores := unasCartas collect: [ :c | c valor ].
 	^ (valores includes: 6) and: [ valores includes: 7 ].
+
 ]

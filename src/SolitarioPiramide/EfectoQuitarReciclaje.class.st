@@ -1,3 +1,6 @@
+"
+Clase utilizada para efectivizar el Reciclaje de la Partida
+"
 Class {
 	#name : 'EfectoQuitarReciclaje',
 	#superclass : 'EfectoRey',

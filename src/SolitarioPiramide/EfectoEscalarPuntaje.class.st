@@ -1,3 +1,6 @@
+"
+Clase utilizada para aplicar bonificación x2 de Puntaje en la Partida
+"
 Class {
 	#name : 'EfectoEscalarPuntaje',
 	#superclass : 'EfectoRey',
@@ -16,7 +19,7 @@ EfectoEscalarPuntaje class >> factor: unNumero [
 	^ self new factor: unNumero; yourself.
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 EfectoEscalarPuntaje >> aplicarEn: unaPartida [
 	| actual nuevo |
 	actual := unaPartida puntaje total.

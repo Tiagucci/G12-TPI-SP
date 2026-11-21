@@ -1,3 +1,6 @@
+"
+Clase utilizada para modificar en n segundos al tiempo de la Partida
+"
 Class {
 	#name : 'EfectoModificarTiempo',
 	#superclass : 'EfectoRey',

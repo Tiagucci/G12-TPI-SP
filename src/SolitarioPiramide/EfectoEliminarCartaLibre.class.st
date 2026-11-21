@@ -1,3 +1,6 @@
+"
+Clase utilizada para eliminar una carta libre, al azar, en la Partida
+"
 Class {
 	#name : 'EfectoEliminarCartaLibre',
 	#superclass : 'EfectoRey',

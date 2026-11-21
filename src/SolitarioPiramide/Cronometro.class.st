@@ -17,7 +17,7 @@ Class {
 	#package : 'SolitarioPiramide'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 Cronometro >> activarRalentizacion: duracionRealSeconds factor: unFactor [
 	"Ejemplo: 6 segundos reales a factor 0.5 hacen que pasen solo 3 segundos de juego"
 	segundosRalentizados := duracionRealSeconds.
@@ -48,7 +48,7 @@ Cronometro >> corriendo [
 	^ corriendo.
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 Cronometro >> estaRalentizado [
 	^ segundosRalentizados > 0.
 ]
@@ -57,6 +57,8 @@ Cronometro >> estaRalentizado [
 Cronometro >> iniciar [
 	tiempoTranscurrido := 0.
 	corriendo := true.
+	factorVelocidad := 1.0.
+	segundosRalentizados := 0.
 ]
 
 { #category : 'initialization' }
