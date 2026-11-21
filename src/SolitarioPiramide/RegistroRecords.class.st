@@ -57,11 +57,10 @@ RegistroRecords >> mejorPuntaje [
 	^ mejorPuntaje.
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 RegistroRecords >> registrar: unPuntaje [
-	"Actualiza el récord y lo persiste en disco solo si el puntaje actual lo supera"
-	unPuntaje > mejorPuntaje ifTrue: [
-		mejorPuntaje := unPuntaje.
-		self guardar.
-	].
+
+	unPuntaje > mejorPuntaje ifFalse: [ ^ self ].
+	mejorPuntaje := unPuntaje.
+	self guardar
 ]

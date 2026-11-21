@@ -8,7 +8,7 @@ Class {
 	#package : 'SolitarioPiramide'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 Eliminacion67 >> aplicarEfectoExtraEn: unaPartida [
 	unaPartida activarComboSeisSiete.
 ]

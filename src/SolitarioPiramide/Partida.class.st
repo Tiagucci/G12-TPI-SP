@@ -73,6 +73,121 @@ Partida >> cronometro [
 	^ cronometro.
 ]
 
+{ #category : 'examples' }
+Partida >> ejemplo1 [
+| partida ventana tablero lblInfo lblMensaje proceso tiempoAnterior
+  refrescar actualizarInfo nuevaPartida cartaMorph crearBoton textoCarta |
+
+textoCarta := [ :carta |
+	carta rango asString, ' ', carta palo asString first asString ].
+
+crearBoton := [ :x :y :w :h :texto :accion |
+	| m etiqueta |
+	m := Morph new.
+	m color: (Color r: 0.85 g: 0.85 b: 0.6).
+	m extent: w @ h.
+	m position: tablero position + (x @ y).
+	etiqueta := StringMorph contents: texto.
+	etiqueta position: m position + (8 @ 8).
+	m addMorph: etiqueta.
+	m on: #mouseDown send: #value to: accion.
+	m ].
+
+cartaMorph := [ :casilla |
+	| m carta colorFondo colorTexto etiqueta x y |
+	carta := casilla carta.
+	colorFondo := (partida seleccion includes: casilla)
+		ifTrue: [ Color yellow ]
+		ifFalse: [ casilla esLibre ifTrue: [ Color white ] ifFalse: [ Color gray ] ].
+	colorTexto := (#(corazones diamantes) includes: carta palo)
+		ifTrue: [ Color red ] ifFalse: [ Color black ].
+	x := (7 - casilla fila) * 30 + ((casilla columna - 1) * 60).
+	y := (casilla fila - 1) * 30.
+	m := Morph new.
+	m color: colorFondo.
+	m extent: 60 @ 84.
+	m position: tablero position + (250 @ 100) + (x @ y).
+	etiqueta := StringMorph contents: (textoCarta value: carta).
+	etiqueta color: colorTexto.
+	etiqueta position: m position + (4 @ 4).
+	m addMorph: etiqueta.
+	casilla esLibre ifTrue: [
+		m on: #mouseDown send: #value to: [ partida seleccionar: casilla. refrescar value ] ].
+	m ].
+
+refrescar := [
+	tablero removeAllMorphs.
+	partida piramide casillas do: [ :c |
+		c estaEliminada ifFalse: [ tablero addMorph: (cartaMorph value: c) ] ].
+	tablero addMorph: (crearBoton valueWithArguments: {
+		250. 420. 120. 84.
+		'Mazo: ', partida mazoAuxiliar cantidadCartas printString.
+		[ partida robarDelMazo. refrescar value ] }).
+	tablero addMorph: (crearBoton valueWithArguments: {
+		400. 420. 120. 84.
+		partida mazoAuxiliar cartaVisible
+			ifNil: [ 'Descarte vacio' ]
+			ifNotNil: [ :c | textoCarta value: c ].
+		[ partida seleccionarCartaDelMazo. refrescar value ] }).
+	tablero addMorph: (crearBoton valueWithArguments: {
+		250. 560. 150. 40. 'Nueva partida'. nuevaPartida }).
+	tablero addMorph: (crearBoton valueWithArguments: {
+		420. 560. 120. 40. 'Salir'. [ proceso terminate. ventana delete ] }).
+	actualizarInfo value ].
+
+actualizarInfo := [
+	lblInfo contents: 'Tiempo: ', partida cronometro tiempoRestante printString,
+		's   Puntaje: ', partida puntaje total printString,
+		'   Racha: ', partida puntaje rachaActual printString,
+		'   Record: ', partida registro mejorPuntaje printString,
+		(partida estaEnCamaraLenta ifTrue: [ '   [CAMARA LENTA]' ] ifFalse: [ '' ]).
+	lblMensaje contents: (partida estado = #ganada
+		ifTrue: [ 'GANASTE! Puntaje final: ', partida puntaje total printString ]
+		ifFalse: [
+			partida estado = #perdida
+				ifTrue: [ 'PERDISTE. Usa Nueva partida para volver a intentar.' ]
+				ifFalse: [ '' ] ]) ].
+
+nuevaPartida := [
+	partida := Partida new.
+	partida iniciar.
+	tiempoAnterior := Time millisecondClockValue.
+	refrescar value ].
+
+ventana := Morph new.
+ventana color: (Color r: 0.07 g: 0.35 b: 0.2).
+ventana extent: 900 @ 640.
+ventana openInWorld.
+
+tablero := Morph new.
+tablero color: Color transparent.
+tablero extent: 900 @ 640.
+tablero position: ventana position.
+ventana addMorph: tablero.
+
+lblInfo := StringMorph contents: ''.
+lblInfo color: Color white.
+lblInfo position: ventana position + (20 @ 15).
+ventana addMorph: lblInfo.
+
+lblMensaje := StringMorph contents: ''.
+lblMensaje color: Color yellow.
+lblMensaje position: ventana position + (20 @ 40).
+ventana addMorph: lblMensaje.
+
+nuevaPartida value.
+
+proceso := [
+	[ true ] whileTrue: [
+		(Delay forMilliseconds: 200) wait.
+		UIManager default defer: [
+			| ahora |
+			ahora := Time millisecondClockValue.
+			partida avanzarTiempo: (ahora - tiempoAnterior) / 1000.0.
+			tiempoAnterior := ahora.
+			actualizarInfo value ] ] ] fork.
+]
+
 { #category : 'testing' }
 Partida >> estaEnCamaraLenta [
 	^ cronometro estaRalentizado.

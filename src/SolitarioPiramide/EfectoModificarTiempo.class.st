@@ -14,7 +14,7 @@ Class {
 	#package : 'SolitarioPiramide'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 EfectoModificarTiempo >> aplicarEn: unaPartida [
 	unaPartida cronometro agregarTiempo: segundos.
 ]

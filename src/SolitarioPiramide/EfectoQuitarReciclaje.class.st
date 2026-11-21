@@ -8,7 +8,7 @@ Class {
 	#package : 'SolitarioPiramide'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 EfectoQuitarReciclaje >> aplicarEn: unaPartida [
 	unaPartida mazoAuxiliar consumirReciclaje.
 ]

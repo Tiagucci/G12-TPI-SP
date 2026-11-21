@@ -8,7 +8,7 @@ Class {
 	#package : 'SolitarioPiramide'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 EfectoEliminarCartaLibre >> aplicarEn: unaPartida [
 	| libres |
 	libres := unaPartida piramide casillasLibres.
