@@ -22,6 +22,12 @@ Carta class >> rango: unRango palo: unPalo [
 ]
 
 { #category : 'accessing' }
+Carta >> esPaloRojo [
+
+	^ #( #corazones #diamantes ) includes: palo
+]
+
+{ #category : 'accessing' }
 Carta >> esRey [
 	^ self valor = 13.
 ]

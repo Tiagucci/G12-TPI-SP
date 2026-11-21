@@ -1,0 +1,171 @@
+Class {
+	#name : 'PartidaMorph',
+	#superclass : 'Morph',
+	#instVars : [
+		'partida',
+		'panelEstado',
+		'piramideMorph',
+		'mazoMorph',
+		'overlayCian',
+		'cartelNotificacion'
+	],
+	#category : 'SolitarioPiramide-UI',
+	#package : 'SolitarioPiramide-UI'
+}
+
+{ #category : 'initialization' }
+PartidaMorph >> construirInterfaz [
+	"1. Barra superior"
+	panelEstado := PanelEstadoMorph new.
+	panelEstado position: self position + (20 @ 16).
+	panelEstado alReiniciar: [
+		self limpiarNotificacion.
+		partida iniciar ].
+	self addMorph: panelEstado.
+
+	"2. Pirámide central"
+	piramideMorph := PiramideMorph new.
+	piramideMorph position: self position + (20 @ 95).
+	piramideMorph alSeleccionarCasilla: [ :casilla |
+		self limpiarNotificacion.
+		partida seleccionar: casilla ].
+	piramideMorph alHacerClicDerechoEnCasilla: [ :casilla |
+		| efecto |
+		efecto := partida activarPoderReyEn: casilla.
+		efecto ifNotNil: [
+			self mostrarNotificacion: efecto nombre esPositivo: efecto esPositivo ] ].
+	self addMorph: piramideMorph.
+
+	"3. Mazo auxiliar a la derecha"
+	mazoMorph := MazoMorph new.
+	mazoMorph position: self position + (720 @ 120).
+	mazoMorph alRobar: [
+		self limpiarNotificacion.
+		partida robarDelMazo ].
+	mazoMorph alSeleccionarDescarte: [
+		self limpiarNotificacion.
+		partida seleccionarCartaDelMazo ].
+	self addMorph: mazoMorph.
+
+	"4. Filtro azul translúcido para Bullet-Time (inicialmente oculto)"
+	overlayCian := Morph new.
+	overlayCian extent: self extent.
+	overlayCian position: self position.
+	overlayCian color: (Color r: 0.0 g: 0.75 b: 1.0 alpha: 0.14).
+	overlayCian lock.
+	overlayCian visible: false.
+	self addMorph: overlayCian.
+]
+
+{ #category : 'initialization' }
+PartidaMorph >> initialize [
+	super initialize.
+	self extent: 940 @ 650.
+	self color: (Color r: 0.09 g: 0.14 b: 0.20).
+	self borderWidth: 2.
+	self borderColor: (Color r: 0.22 g: 0.30 b: 0.40).
+
+	partida := Partida new.
+	partida addDependent: self.
+
+	self construirInterfaz.
+	partida iniciar.
+	self startStepping.
+]
+
+{ #category : 'notifications' }
+PartidaMorph >> limpiarNotificacion [
+	cartelNotificacion ifNotNil: [
+		cartelNotificacion delete.
+		cartelNotificacion := nil ].
+]
+
+{ #category : 'notifications' }
+PartidaMorph >> mostrarFinDePartida: unTitulo color: unColor [
+	| fuente titulo subtitulo |
+	self limpiarNotificacion.
+
+	cartelNotificacion := Morph new.
+	cartelNotificacion extent: 520 @ 110.
+	cartelNotificacion center: self center.
+	cartelNotificacion color: unColor.
+	cartelNotificacion borderWidth: 3.
+	cartelNotificacion borderColor: Color white.
+
+	fuente := LogicalFont familyName: 'Source Sans Pro' pointSize: 16.
+	titulo := StringMorph contents: unTitulo font: fuente emphasis: 1.
+	titulo color: Color white.
+	titulo center: cartelNotificacion center - (0 @ 18).
+
+	subtitulo := StringMorph
+		contents: 'Puntaje final: ' , partida puntaje total asString , '  |  Tocá "Nueva Partida" para volver a jugar'
+		font: (LogicalFont familyName: 'Source Sans Pro' pointSize: 12).
+	subtitulo color: Color white.
+	subtitulo center: cartelNotificacion center + (0 @ 20).
+
+	cartelNotificacion
+		addMorph: titulo;
+		addMorph: subtitulo.
+	self addMorph: cartelNotificacion.
+]
+
+{ #category : 'notifications' }
+PartidaMorph >> mostrarNotificacion: unTexto esPositivo: unBooleano [
+	| fuente label |
+	self limpiarNotificacion.
+
+	cartelNotificacion := Morph new.
+	cartelNotificacion extent: 560 @ 42.
+	cartelNotificacion position: self position + (190 @ 585).
+	cartelNotificacion color: (unBooleano
+		ifTrue: [ Color r: 0.12 g: 0.42 b: 0.55 alpha: 0.95 ]
+		ifFalse: [ Color r: 0.58 g: 0.16 b: 0.20 alpha: 0.95 ]).
+	cartelNotificacion borderWidth: 2.
+	cartelNotificacion borderColor: Color white.
+
+	fuente := LogicalFont familyName: 'Source Sans Pro' pointSize: 13.
+	label := StringMorph contents: unTexto font: fuente emphasis: 1.
+	label color: Color white.
+	label center: cartelNotificacion center.
+
+	cartelNotificacion addMorph: label.
+	self addMorph: cartelNotificacion.
+]
+
+{ #category : 'stepping' }
+PartidaMorph >> step [
+	partida ifNotNil: [
+		partida avanzarTiempo: 1 ].
+]
+
+{ #category : 'stepping' }
+PartidaMorph >> stepTime [
+	^ 1000.
+]
+
+{ #category : 'updating' }
+PartidaMorph >> update: unAspecto [
+	| enSlowMo |
+	partida ifNil: [ ^ self ].
+
+	panelEstado actualizarCon: partida.
+	piramideMorph piramide: partida piramide.
+	piramideMorph actualizarConSeleccion: partida seleccion.
+	mazoMorph mazoAuxiliar: partida mazoAuxiliar.
+
+	"Activar o desactivar estética Bullet-Time (6-7)"
+	enSlowMo := partida estaEnCamaraLenta.
+	overlayCian visible: enSlowMo.
+	self borderColor: (enSlowMo
+		ifTrue: [ Color cyan ]
+		ifFalse: [ Color r: 0.22 g: 0.30 b: 0.40 ]).
+
+	(enSlowMo and: [ cartelNotificacion isNil ]) ifTrue: [
+		self mostrarNotificacion: 'COMBO 6-7! TIEMPO RALENTIZADO 0.5x (+67 pts)' esPositivo: true ].
+
+	"Pantalla de fin de partida"
+	partida estado = #ganada ifTrue: [
+		self mostrarFinDePartida: '¡VICTORIA! PIRÁMIDE DESPEJADA' color: (Color r: 0.15 g: 0.65 b: 0.35) ].
+	partida estado = #perdida ifTrue: [
+		self mostrarFinDePartida: 'FIN DEL JUEGO — SIN MOVIMIENTOS O TIEMPO' color: (Color r: 0.75 g: 0.20 b: 0.22) ].
+]
