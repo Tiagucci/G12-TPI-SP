@@ -59,6 +59,12 @@ Piramide >> estaVacia [
 	^ casillas allSatisfy: [ :c | c estaEliminada ].
 ]
 
+{ #category : 'accessing' }
+Piramide >> filas [
+	^ (1 to: 7) collect: [ :f |
+		casillas select: [ :c | c fila = f ] ].
+]
+
 { #category : 'initialization' }
 Piramide >> hayCombinacionPosible [
 	"Verifica si entre las casillas libres hay algún Rey o alguna pareja que sume 13"
