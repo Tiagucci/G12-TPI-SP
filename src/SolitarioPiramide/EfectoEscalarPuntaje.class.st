@@ -14,9 +14,11 @@ Class {
 	#package : 'SolitarioPiramide'
 }
 
-{ #category : 'accessing' }
-EfectoEscalarPuntaje class >> factor: unNumero [
-	^ self new factor: unNumero; yourself.
+{ #category : 'instance creation' }
+EfectoEscalarPuntaje class >> factor: unFactor [
+	^ self new
+		factor: unFactor;
+		yourself.
 ]
 
 { #category : 'accessing' }
@@ -28,10 +30,18 @@ EfectoEscalarPuntaje >> aplicarEn: unaPartida [
 ]
 
 { #category : 'accessing' }
-EfectoEscalarPuntaje >> factor: unNumero [
-	factor := unNumero.
-	esPositivo := unNumero >= 1.
-	nombre := esPositivo
-		ifTrue: [ 'Fortuna Real: ¡Puntaje x2!' ]
-		ifFalse: [ 'Impuesto Real: Puntaje dividido a la mitad' ].
+EfectoEscalarPuntaje >> esPositivo [
+	^ factor > 1.
+]
+
+{ #category : 'accessing' }
+EfectoEscalarPuntaje >> factor: unFactor [
+	factor := unFactor.
+]
+
+{ #category : 'accessing' }
+EfectoEscalarPuntaje >> nombre [
+	^ factor > 1
+		ifTrue: [ 'Tesoro Real: ¡Puntaje multiplicado x' , factor asString , '!' ]
+		ifFalse: [ 'Impuesto Real: ¡Puntaje reducido a la mitad!' ].
 ]

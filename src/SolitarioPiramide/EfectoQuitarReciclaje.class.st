@@ -13,6 +13,11 @@ EfectoQuitarReciclaje >> aplicarEn: unaPartida [
 	unaPartida mazoAuxiliar consumirReciclaje.
 ]
 
+{ #category : 'accessing' }
+EfectoQuitarReciclaje >> esPositivo [
+	^ false.
+]
+
 { #category : 'initialization' }
 EfectoQuitarReciclaje >> initialize [
 	super initialize.

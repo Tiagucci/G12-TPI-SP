@@ -6,6 +6,7 @@ Class {
 		'labelRacha',
 		'labelRecord',
 		'labelTiempo',
+		'botonPausa',
 		'botonReiniciar',
 		'botonSalir'
 	],
@@ -35,6 +36,11 @@ PanelEstadoMorph >> actualizarCon: unaPartida [
 ]
 
 { #category : 'accessing' }
+PanelEstadoMorph >> alPausar: unBloque [
+	botonPausa on: #mouseDown send: #value to: unBloque.
+]
+
+{ #category : 'accessing' }
 PanelEstadoMorph >> alReiniciar: unBloque [
 	botonReiniciar on: #mouseDown send: #value to: unBloque.
 ]
@@ -51,19 +57,25 @@ PanelEstadoMorph >> construirComponentes [
 
 	labelPuntaje := StringMorph contents: 'Puntaje: 0' font: fuente emphasis: 1.
 	labelPuntaje color: Color white.
-	labelPuntaje position: self position + (24 @ 18).
+	labelPuntaje position: self position + (22 @ 18).
 
 	labelRacha := StringMorph contents: 'Racha: x0' font: fuente emphasis: 1.
 	labelRacha color: (Color r: 1.0 g: 0.84 b: 0.25).
-	labelRacha position: self position + (185 @ 18).
+	labelRacha position: self position + (175 @ 18).
 
 	labelRecord := StringMorph contents: 'Récord: 0' font: fuente emphasis: 1.
 	labelRecord color: (Color r: 0.45 g: 0.90 b: 0.60).
-	labelRecord position: self position + (330 @ 18).
+	labelRecord position: self position + (315 @ 18).
 
 	labelTiempo := StringMorph contents: 'Tiempo: 300s' font: fuente emphasis: 1.
 	labelTiempo color: Color white.
-	labelTiempo position: self position + (495 @ 18).
+	labelTiempo position: self position + (465 @ 18).
+
+	botonPausa := self
+		crearBotonTexto: '||'
+		extent: 36 @ 32
+		color: (Color r: 0.25 g: 0.34 b: 0.46).
+	botonPausa position: self position + (666 @ 12).
 
 	botonReiniciar := self
 		crearBotonTexto: 'Nueva Partida'
@@ -82,6 +94,7 @@ PanelEstadoMorph >> construirComponentes [
 		addMorph: labelRacha;
 		addMorph: labelRecord;
 		addMorph: labelTiempo;
+		addMorph: botonPausa;
 		addMorph: botonReiniciar;
 		addMorph: botonSalir.
 ]
@@ -122,12 +135,24 @@ PanelEstadoMorph >> crearBotonTexto: unTexto extent: unTamano color: unColor [
 					moveTo: (w - m) @ m;
 					lineTo: m @ (h - m) ].
 			(canvas setStrokePaint: Color white) width: 2.5.
-			canvas drawShape: cruz ] ].
+			canvas drawShape: cruz ].
+
+		unTexto = '||' ifTrue: [
+			| barras |
+			barras := canvas createPath: [ :builder |
+				builder
+					absolute;
+					moveTo: 13.0 @ 9.0;
+					lineTo: 13.0 @ (h - 9.0);
+					moveTo: (w - 13.0) @ 9.0;
+					lineTo: (w - 13.0) @ (h - 9.0) ].
+			(canvas setStrokePaint: Color white) width: 3.0.
+			canvas drawShape: barras ] ].
 
 	form := surface asForm asFormOfDepth: 32.
 	boton := form asMorph.
 
-	unTexto = 'X' ifFalse: [
+	(unTexto = 'X' or: [ unTexto = '||' ]) ifFalse: [
 		fuente := LogicalFont familyName: 'Source Sans Pro' pointSize: 12.
 		label := StringMorph contents: unTexto font: fuente emphasis: 1.
 		label color: Color white.

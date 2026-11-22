@@ -58,6 +58,11 @@ RegistroRecords >> mejorPuntaje [
 ]
 
 { #category : 'accessing' }
+RegistroRecords >> record [
+	^ mejorPuntaje.
+]
+
+{ #category : 'accessing' }
 RegistroRecords >> registrar: unPuntaje [
 
 	unPuntaje > mejorPuntaje ifFalse: [ ^ self ].

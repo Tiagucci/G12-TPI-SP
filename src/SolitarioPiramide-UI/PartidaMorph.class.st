@@ -7,23 +7,45 @@ Class {
 		'piramideMorph',
 		'mazoMorph',
 		'overlayCian',
-		'cartelNotificacion'
+		'cartelNotificacion',
+		'menuInicio',
+		'overlayPausa',
+		'ayudaMorph'
 	],
 	#category : 'SolitarioPiramide-UI',
 	#package : 'SolitarioPiramide-UI'
 }
 
+{ #category : 'notifications' }
+PartidaMorph >> abrirAyuda [
+	ayudaMorph ifNotNil: [ ^ self ].
+	ayudaMorph := AyudaMorph new.
+	ayudaMorph center: self center.
+	ayudaMorph alVolver: [
+		ayudaMorph delete.
+		ayudaMorph := nil ].
+	self addMorph: ayudaMorph.
+]
+
 { #category : 'initialization' }
 PartidaMorph >> construirInterfaz [
 	"1. Barra superior"
 	panelEstado := PanelEstadoMorph new.
-	panelEstado position: self position + (20 @ 16).
+	panelEstado position: self position + (20 @ 12).
+	panelEstado alPausar: [
+		partida estado = #enCurso
+			ifTrue: [ partida pausar ]
+			ifFalse: [ partida estado = #pausada ifTrue: [ partida reanudar ] ] ].
 	panelEstado alReiniciar: [
 		self limpiarNotificacion.
 		partida iniciar ].
+	panelEstado alSalir: [ self delete ].
 	self addMorph: panelEstado.
 	
-	panelEstado alSalir: [ self delete ].
+panelEstado alPausar: [
+		partida estado = #enCurso
+			ifTrue: [ partida pausar ]
+			ifFalse: [ partida estado = #pausada ifTrue: [ partida reanudar ] ] ].
 
 	"2. Pirámide central"
 	piramideMorph := PiramideMorph new.
@@ -57,6 +79,29 @@ PartidaMorph >> construirInterfaz [
 	overlayCian lock.
 	overlayCian visible: false.
 	self addMorph: overlayCian.
+	
+"5. Cortina de Pausa (tapa el tablero debajo de la barra superior)"
+	overlayPausa := OverlayPausaMorph new.
+	overlayPausa position: self position + (2 @ 78).
+	overlayPausa alReanudar: [ partida reanudar ].
+	overlayPausa alPedirAyuda: [ self abrirAyuda ].
+	overlayPausa alVolverMenu: [
+		self limpiarNotificacion.
+		partida := Partida new.
+		partida addDependent: self.
+		self update: nil ].
+	overlayPausa visible: false.
+	self addMorph: overlayPausa.
+
+	"6. Pantalla de Inicio"
+	menuInicio := MenuInicioMorph new.
+	menuInicio position: self position + (2 @ 2).
+	menuInicio alIniciar: [
+		self limpiarNotificacion.
+		partida iniciar ].
+	menuInicio alPedirAyuda: [ self abrirAyuda ].
+	menuInicio alSalir: [ self delete ].
+	self addMorph: menuInicio.
 ]
 
 { #category : 'initialization' }
@@ -77,7 +122,7 @@ PartidaMorph >> initialize [
 	partida addDependent: self.
 
 	self construirInterfaz.
-	partida iniciar.
+	self update: nil.
 	self startStepping.
 ]
 
@@ -90,11 +135,11 @@ PartidaMorph >> limpiarNotificacion [
 
 { #category : 'notifications' }
 PartidaMorph >> mostrarFinDePartida: unTitulo color: unColor [
-	| fuente titulo subtitulo |
+	| fuente titulo detalle ayuda |
 	self limpiarNotificacion.
 
 	cartelNotificacion := Morph new.
-	cartelNotificacion extent: 520 @ 110.
+	cartelNotificacion extent: 540 @ 130.
 	cartelNotificacion center: self center.
 	cartelNotificacion color: unColor.
 	cartelNotificacion borderWidth: 3.
@@ -103,17 +148,26 @@ PartidaMorph >> mostrarFinDePartida: unTitulo color: unColor [
 	fuente := LogicalFont familyName: 'Source Sans Pro' pointSize: 16.
 	titulo := StringMorph contents: unTitulo font: fuente emphasis: 1.
 	titulo color: Color white.
-	titulo center: cartelNotificacion center - (0 @ 18).
+	titulo center: cartelNotificacion center - (0 @ 30).
 
-	subtitulo := StringMorph
-		contents: 'Puntaje final: ' , partida puntaje total asString , '  |  Tocá "Nueva Partida" para volver a jugar'
-		font: (LogicalFont familyName: 'Source Sans Pro' pointSize: 12).
-	subtitulo color: Color white.
-	subtitulo center: cartelNotificacion center + (0 @ 20).
+	detalle := StringMorph
+		contents: 'Puntaje final: ' , partida puntaje total asString
+			, '   |   Récord: ' , partida registro record asString
+		font: (LogicalFont familyName: 'Source Sans Pro' pointSize: 13)
+		emphasis: 1.
+	detalle color: (Color r: 1.0 g: 0.92 b: 0.55).
+	detalle center: cartelNotificacion center + (0 @ 4).
+
+	ayuda := StringMorph
+		contents: 'Tocá "Nueva Partida" o presioná R para volver a jugar'
+		font: (LogicalFont familyName: 'Source Sans Pro' pointSize: 11).
+	ayuda color: Color white.
+	ayuda center: cartelNotificacion center + (0 @ 34).
 
 	cartelNotificacion
 		addMorph: titulo;
-		addMorph: subtitulo.
+		addMorph: detalle;
+		addMorph: ayuda.
 	self addMorph: cartelNotificacion.
 ]
 
@@ -125,7 +179,7 @@ PartidaMorph >> mostrarNotificacion: unTexto esPositivo: unBooleano [
 	cartelNotificacion := Morph new.
 	cartelNotificacion extent: 560 @ 42.
 	cartelNotificacion position: self position + (190 @ 585).
-	cartelNotificacion color: (unBooleano
+	cartelNotificacion color: (unBooleano = true
 		ifTrue: [ Color r: 0.12 g: 0.42 b: 0.55 alpha: 0.95 ]
 		ifFalse: [ Color r: 0.58 g: 0.16 b: 0.20 alpha: 0.95 ]).
 	cartelNotificacion borderWidth: 2.
@@ -176,4 +230,10 @@ PartidaMorph >> update: unAspecto [
 		self mostrarFinDePartida: '¡VICTORIA! PIRÁMIDE DESPEJADA' color: (Color r: 0.15 g: 0.65 b: 0.35) ].
 	partida estado = #perdida ifTrue: [
 		self mostrarFinDePartida: 'FIN DEL JUEGO — SIN MOVIMIENTOS O TIEMPO' color: (Color r: 0.75 g: 0.20 b: 0.22) ].
+	
+menuInicio visible: (partida estado = #creada).
+	partida estado = #creada ifTrue: [
+		menuInicio record: partida registro record ].
+
+	overlayPausa visible: (partida estado = #pausada).
 ]

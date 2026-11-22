@@ -17,6 +17,11 @@ EfectoEliminarCartaLibre >> aplicarEn: unaPartida [
 		unaPartida puntaje sumarPorEliminacion: 1 ].
 ]
 
+{ #category : 'accessing' }
+EfectoEliminarCartaLibre >> esPositivo [
+	^ true.
+]
+
 { #category : 'initialization' }
 EfectoEliminarCartaLibre >> initialize [
 	super initialize.

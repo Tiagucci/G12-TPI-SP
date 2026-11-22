@@ -50,6 +50,16 @@ Partida >> avanzarTiempo: unosSegundos [
 	self changed.
 ]
 
+{ #category : 'actions' }
+Partida >> avanzarTiempo: unosSegundos
+	avanzarTiempo: unosSegundos [
+	estado = #enCurso ifFalse: [ ^ self ].
+	estado = #jugando ifFalse: [ ^ self ].
+	cronometro avanzar: unosSegundos.
+	self verificarEstadoPartida.
+	self changed.
+]
+
 { #category : 'private' }
 Partida >> confirmarEliminacion [
 	| cartasSeleccionadas regla |
@@ -255,6 +265,13 @@ Partida >> mazoAuxiliar [
 	^ mazoAuxiliar.
 ]
 
+{ #category : 'actions' }
+Partida >> pausar [
+	estado = #enCurso ifFalse: [ ^ self ].
+	estado := #pausada.
+	self changed.
+]
+
 { #category : 'accessing' }
 Partida >> piramide [
 	^ piramide.
@@ -263,6 +280,13 @@ Partida >> piramide [
 { #category : 'accessing' }
 Partida >> puntaje [
 	^ puntaje.
+]
+
+{ #category : 'actions' }
+Partida >> reanudar [
+	estado = #pausada ifFalse: [ ^ self ].
+	estado := #enCurso.
+	self changed.
 ]
 
 { #category : 'accessing' }

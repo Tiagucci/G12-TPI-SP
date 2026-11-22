@@ -15,7 +15,7 @@ Class {
 
 { #category : 'drawing' }
 CartaMorph >> actualizarApariencia [
-	| fondoForm colorFondo colorBorde grosor etiquetaSup paloChico paloCentro fuenteRango |
+	| fondoForm colorFondo colorBorde grosor etiquetaSup paloChico paloCentro fuenteRango esReyLibre |
 	self removeAllMorphs.
 	self borderWidth: 0.
 
@@ -35,19 +35,30 @@ CartaMorph >> actualizarApariencia [
 		self addMorph: (fondoForm asMorph position: self position).
 		^ self ].
 
+	esReyLibre := (carta rango asString = 'K') and: [ bloqueada not ].
+
 	colorFondo := bloqueada
 		ifTrue: [ Color r: 0.86 g: 0.88 b: 0.91 ]
 		ifFalse: [ Color r: 0.98 g: 0.98 b: 0.99 ].
-	colorBorde := seleccionada
-		ifTrue: [ Color r: 0.95 g: 0.72 b: 0.10 ]
-		ifFalse: [ Color r: 0.72 g: 0.75 b: 0.80 ].
-	grosor := seleccionada ifTrue: [ 3 ] ifFalse: [ 1.5 ].
+
+	seleccionada
+		ifTrue: [
+			colorBorde := Color cyan.
+			grosor := 3 ]
+		ifFalse: [
+			esReyLibre
+				ifTrue: [
+					colorBorde := Color r: 0.92 g: 0.72 b: 0.15.
+					grosor := 2.5 ]
+				ifFalse: [
+					colorBorde := Color r: 0.72 g: 0.75 b: 0.80.
+					grosor := 1.5 ] ].
 
 	fondoForm := self formFondoColor: colorFondo borde: colorBorde grosor: grosor.
 	self addMorph: (fondoForm asMorph position: self position).
 
 	fuenteRango := LogicalFont familyName: 'Source Sans Pro' pointSize: 14.
-etiquetaSup := StringMorph contents: carta rango asString font: fuenteRango emphasis: 1.
+	etiquetaSup := StringMorph contents: carta rango asString font: fuenteRango emphasis: 1.
 	etiquetaSup color: self colorTexto.
 	etiquetaSup position: self position + (8 @ 6).
 
