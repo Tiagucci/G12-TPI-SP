@@ -14,10 +14,6 @@ Class {
 	#package : 'SolitarioPiramide'
 }
 
-{ #category : 'as yet unclassified' }
-RegistroRecords >> HOLA [
-]
-
 { #category : 'accessing' }
 RegistroRecords >> archivo [
 	^ archivo.
