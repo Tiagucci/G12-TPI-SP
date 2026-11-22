@@ -22,6 +22,8 @@ PartidaMorph >> construirInterfaz [
 		self limpiarNotificacion.
 		partida iniciar ].
 	self addMorph: panelEstado.
+	
+	panelEstado alSalir: [ self delete ].
 
 	"2. Pirámide central"
 	piramideMorph := PiramideMorph new.
@@ -55,6 +57,12 @@ PartidaMorph >> construirInterfaz [
 	overlayCian lock.
 	overlayCian visible: false.
 	self addMorph: overlayCian.
+]
+
+{ #category : 'initialization' }
+PartidaMorph >> delete [
+	self stopStepping.
+	super delete.
 ]
 
 { #category : 'initialization' }

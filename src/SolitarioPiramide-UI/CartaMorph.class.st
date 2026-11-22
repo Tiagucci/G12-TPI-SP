@@ -192,7 +192,7 @@ CartaMorph >> formFondoColor: colorFondo borde: colorBorde grosor: unGrosor [
 		canvas drawShape: path.
 		(canvas setStrokePaint: colorBorde) width: unGrosor asFloat.
 		canvas drawShape: path ].
-	^ surface asForm.
+	^ surface asForm asFormOfDepth: 32.
 ]
 
 { #category : 'drawing' }
@@ -248,7 +248,7 @@ CartaMorph >> formPaloTamano: tamano [
 					close ] ].
 		canvas setPaint: self colorTexto.
 		canvas drawShape: path ].
-	^ surface asForm.
+	^ surface asForm asFormOfDepth: 32.
 ]
 
 { #category : 'event handling' }

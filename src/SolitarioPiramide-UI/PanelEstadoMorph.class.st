@@ -6,7 +6,8 @@ Class {
 		'labelRacha',
 		'labelRecord',
 		'labelTiempo',
-		'botonReiniciar'
+		'botonReiniciar',
+		'botonSalir'
 	],
 	#category : 'SolitarioPiramide-UI',
 	#package : 'SolitarioPiramide-UI'
@@ -35,9 +36,12 @@ PanelEstadoMorph >> actualizarCon: unaPartida [
 
 { #category : 'accessing' }
 PanelEstadoMorph >> alReiniciar: unBloque [
-	botonReiniciar
-		target: unBloque;
-		actionSelector: #value.
+	botonReiniciar on: #mouseDown send: #value to: unBloque.
+]
+
+{ #category : 'accessing' }
+PanelEstadoMorph >> alSalir: unBloque [
+	botonSalir on: #mouseDown send: #value to: unBloque.
 ]
 
 { #category : 'initialization' }
@@ -61,19 +65,76 @@ PanelEstadoMorph >> construirComponentes [
 	labelTiempo color: Color white.
 	labelTiempo position: self position + (495 @ 18).
 
-	botonReiniciar := SimpleButtonMorph new.
-	botonReiniciar label: 'Nueva Partida'.
-	botonReiniciar color: (Color r: 0.16 g: 0.48 b: 0.34).
-	botonReiniciar borderWidth: 0.
-	botonReiniciar extent: 125 @ 32.
-	botonReiniciar position: self position + (750 @ 12).
+	botonReiniciar := self
+		crearBotonTexto: 'Nueva Partida'
+		extent: 124 @ 32
+		color: (Color r: 0.16 g: 0.52 b: 0.36).
+	botonReiniciar position: self position + (712 @ 12).
+
+	botonSalir := self
+		crearBotonTexto: 'X'
+		extent: 32 @ 32
+		color: (Color r: 0.72 g: 0.20 b: 0.22).
+	botonSalir position: self position + (848 @ 12).
 
 	self
 		addMorph: labelPuntaje;
 		addMorph: labelRacha;
 		addMorph: labelRecord;
 		addMorph: labelTiempo;
-		addMorph: botonReiniciar.
+		addMorph: botonReiniciar;
+		addMorph: botonSalir.
+]
+
+{ #category : 'initialization' }
+PanelEstadoMorph >> crearBotonTexto: unTexto extent: unTamano color: unColor [
+	| surface form boton fuente label |
+	surface := AthensCairoSurface extent: unTamano.
+	surface drawDuring: [ :canvas |
+		| w h r path |
+		w := unTamano x asFloat.
+		h := unTamano y asFloat.
+		r := 8.0.
+		path := canvas createPath: [ :builder |
+			builder
+				absolute;
+				moveTo: r @ 0.0;
+				lineTo: (w - r) @ 0.0;
+				curveVia: w @ 0.0 to: w @ r;
+				lineTo: w @ (h - r);
+				curveVia: w @ h to: (w - r) @ h;
+				lineTo: r @ h;
+				curveVia: 0.0 @ h to: 0.0 @ (h - r);
+				lineTo: 0.0 @ r;
+				curveVia: 0.0 @ 0.0 to: r @ 0.0;
+				close ].
+		canvas setPaint: unColor.
+		canvas drawShape: path.
+
+		unTexto = 'X' ifTrue: [
+			| cruz m |
+			m := 10.0.
+			cruz := canvas createPath: [ :builder |
+				builder
+					absolute;
+					moveTo: m @ m;
+					lineTo: (w - m) @ (h - m);
+					moveTo: (w - m) @ m;
+					lineTo: m @ (h - m) ].
+			(canvas setStrokePaint: Color white) width: 2.5.
+			canvas drawShape: cruz ] ].
+
+	form := surface asForm asFormOfDepth: 32.
+	boton := form asMorph.
+
+	unTexto = 'X' ifFalse: [
+		fuente := LogicalFont familyName: 'Source Sans Pro' pointSize: 12.
+		label := StringMorph contents: unTexto font: fuente emphasis: 1.
+		label color: Color white.
+		label center: boton center.
+		boton addMorph: label ].
+
+	^ boton.
 ]
 
 { #category : 'initialization' }
@@ -103,7 +164,7 @@ PanelEstadoMorph >> dibujarFondo [
 		canvas drawShape: path.
 		(canvas setStrokePaint: (Color white alpha: 0.18)) width: 1.5.
 		canvas drawShape: path ].
-	fondoForm := surface asForm.
+	fondoForm := surface asForm asFormOfDepth: 32.
 	self addMorph: (fondoForm asMorph position: self position).
 ]
 
