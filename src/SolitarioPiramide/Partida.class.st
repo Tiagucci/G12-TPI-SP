@@ -53,7 +53,6 @@ Partida >> avanzarTiempo: unosSegundos [
 { #category : 'actions' }
 Partida >> avanzarTiempo: unosSegundos
 	avanzarTiempo: unosSegundos [
-	estado = #enCurso ifFalse: [ ^ self ].
 	estado = #jugando ifFalse: [ ^ self ].
 	cronometro avanzar: unosSegundos.
 	self verificarEstadoPartida.
@@ -267,7 +266,7 @@ Partida >> mazoAuxiliar [
 
 { #category : 'actions' }
 Partida >> pausar [
-	estado = #enCurso ifFalse: [ ^ self ].
+	estado = #jugando ifFalse: [ ^ self ].
 	estado := #pausada.
 	self changed.
 ]
@@ -285,7 +284,7 @@ Partida >> puntaje [
 { #category : 'actions' }
 Partida >> reanudar [
 	estado = #pausada ifFalse: [ ^ self ].
-	estado := #enCurso.
+	estado := #jugando.
 	self changed.
 ]
 

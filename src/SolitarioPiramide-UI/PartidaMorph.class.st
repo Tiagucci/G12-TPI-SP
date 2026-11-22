@@ -33,7 +33,7 @@ PartidaMorph >> construirInterfaz [
 	panelEstado := PanelEstadoMorph new.
 	panelEstado position: self position + (20 @ 12).
 	panelEstado alPausar: [
-		partida estado = #enCurso
+		partida estado = #jugando
 			ifTrue: [ partida pausar ]
 			ifFalse: [ partida estado = #pausada ifTrue: [ partida reanudar ] ] ].
 	panelEstado alReiniciar: [
@@ -41,11 +41,6 @@ PartidaMorph >> construirInterfaz [
 		partida iniciar ].
 	panelEstado alSalir: [ self delete ].
 	self addMorph: panelEstado.
-	
-panelEstado alPausar: [
-		partida estado = #enCurso
-			ifTrue: [ partida pausar ]
-			ifFalse: [ partida estado = #pausada ifTrue: [ partida reanudar ] ] ].
 
 	"2. Pirámide central"
 	piramideMorph := PiramideMorph new.
@@ -79,8 +74,8 @@ panelEstado alPausar: [
 	overlayCian lock.
 	overlayCian visible: false.
 	self addMorph: overlayCian.
-	
-"5. Cortina de Pausa (tapa el tablero debajo de la barra superior)"
+
+	"5. Cortina de Pausa (tapa el tablero debajo de la barra superior)"
 	overlayPausa := OverlayPausaMorph new.
 	overlayPausa position: self position + (2 @ 78).
 	overlayPausa alReanudar: [ partida reanudar ].
