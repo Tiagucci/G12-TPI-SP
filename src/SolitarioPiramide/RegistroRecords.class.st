@@ -30,11 +30,12 @@ RegistroRecords >> cargar [
 	"Lee el puntaje histórico desde el archivo si existe; caso contrario inicia en 0"
 	archivo exists
 		ifTrue: [
-			| contenido |
-			contenido := archivo contents trimBoth.
-			mejorPuntaje := contenido asInteger ifNil: [ 0 ] ]
+			mejorPuntaje := [
+				(archivo contents trimBoth) asInteger max: 0
+			] on: Error do: [ :error | 0 ] ]
 		ifFalse: [
 			mejorPuntaje := 0 ].
+	^ mejorPuntaje
 ]
 
 { #category : 'operation' }
@@ -64,7 +65,6 @@ RegistroRecords >> record [
 
 { #category : 'accessing' }
 RegistroRecords >> registrar: unPuntaje [
-
 	unPuntaje > mejorPuntaje ifFalse: [ ^ self ].
 	mejorPuntaje := unPuntaje.
 	self guardar

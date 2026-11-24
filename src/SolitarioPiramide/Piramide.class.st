@@ -16,6 +16,12 @@ Class {
 { #category : 'initialization' }
 Piramide >> armarCon: unMazo [
 	"Distribuye 28 cartas en 7 filas superpuestas (fila 1 tiene 1 carta, fila 7 tiene 7)"
+	| cartasNecesarias |
+	unMazo ifNil: [ self error: 'No se puede armar la pirámide sin un mazo.' ].
+	cartasNecesarias := (cantidadFilas * (cantidadFilas + 1)) // 2.
+	unMazo cantidadCartas < cartasNecesarias
+		ifTrue: [ self error: 'El mazo no contiene suficientes cartas para armar la pirámide.' ].
+
 	casillas removeAll.
 	1 to: cantidadFilas do: [ :fila |
 		1 to: fila do: [ :columna |
@@ -26,9 +32,8 @@ Piramide >> armarCon: unMazo [
 				fila: fila
 				columna: columna
 				piramide: self.
-			casillas add: nuevaCasilla.
-		].
-	].
+			casillas add: nuevaCasilla ] ].
+	^ self
 ]
 
 { #category : 'accessing' }
@@ -70,13 +75,12 @@ Piramide >> hayCombinacionPosible [
 	"Verifica si entre las casillas libres hay algún Rey o alguna pareja que sume 13"
 	| libres |
 	libres := self casillasLibres.
-	(libres anySatisfy: [ :c | c carta esRey ]) ifTrue: [ ^ true ].
-	
-	libres do: [ :c1 |
-		libres do: [ :c2 |
-			(c1 ~= c2 and: [ c1 carta suma13Con: c2 carta ]) ifTrue: [ ^ true ].
-		].
-	].
+	(libres anySatisfy: [ :casilla | casilla carta esRey ]) ifTrue: [ ^ true ].
+
+	1 to: libres size do: [ :indice |
+		indice + 1 to: libres size do: [ :otroIndice |
+			((libres at: indice) carta suma13Con: (libres at: otroIndice) carta)
+				ifTrue: [ ^ true ] ] ].
 	^ false.
 ]
 

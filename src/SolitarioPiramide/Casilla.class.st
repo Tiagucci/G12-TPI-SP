@@ -27,6 +27,7 @@ Casilla >> carta: unaCarta fila: unaFila columna: unaColumna piramide: unaPirami
 	fila := unaFila.
 	columna := unaColumna.
 	piramide := unaPiramide.
+	^ self
 ]
 
 { #category : 'initialization' }
@@ -34,10 +35,11 @@ Casilla >> casillasQueLaCubren [
 	"Devuelve las dos casillas hijas de la fila inferior inmediata"
 	| hijas |
 	hijas := OrderedCollection new.
-	fila < piramide cantidadFilas ifTrue: [ 
-		(piramide casillaEn: fila + 1 columna: columna) ifNotNil: [ :c | hijas add: c ].
-		(piramide casillaEn: fila + 1 columna: columna + 1) ifNotNil: [ :c | hijas add: c ].
-	].
+	fila < piramide cantidadFilas ifTrue: [
+		(piramide casillaEn: fila + 1 columna: columna)
+			ifNotNil: [ :casillaHija | hijas add: casillaHija ].
+		(piramide casillaEn: fila + 1 columna: columna + 1)
+			ifNotNil: [ :casillaHija | hijas add: casillaHija ] ].
 	^ hijas.
 ]
 
@@ -60,7 +62,8 @@ Casilla >> esLibre [
 { #category : 'initialization' }
 Casilla >> estaCubierta [
 	"Está cubierta si alguna de sus dos casillas hijas sigue activa en el juego"
-	^ self casillasQueLaCubren anySatisfy: [ :cadaHija | cadaHija estaEliminada not ].
+	^ self casillasQueLaCubren
+		anySatisfy: [ :cadaHija | cadaHija estaVacia not ].
 ]
 
 { #category : 'initialization' }

@@ -20,6 +20,11 @@ Class {
 { #category : 'accessing' }
 Cronometro >> activarRalentizacion: duracionRealSeconds factor: unFactor [
 	"Ejemplo: 6 segundos reales a factor 0.5 hacen que pasen solo 3 segundos de juego"
+	duracionRealSeconds <= 0 ifTrue: [
+		segundosRalentizados := 0.
+		factorVelocidad := 1.0.
+		^ self ].
+	unFactor <= 0 ifTrue: [ self error: 'El factor de velocidad debe ser mayor que cero.' ].
 	segundosRalentizados := duracionRealSeconds.
 	factorVelocidad := unFactor.
 ]
@@ -28,19 +33,29 @@ Cronometro >> activarRalentizacion: duracionRealSeconds factor: unFactor [
 Cronometro >> agregarTiempo: unosSegundos [
 	"Soporta valores positivos (bonus de K) y negativos (penalización de K).
 	Reduce o aumenta el tiempo transcurrido manteniendo los límites válidos."
-	tiempoTranscurrido := ((tiempoTranscurrido - unosSegundos) max: 0) min: tiempoLimite.
+	tiempoTranscurrido := tiempoTranscurrido - unosSegundos.
 ]
 
 { #category : 'initialization' }
 Cronometro >> avanzar: unosSegundos [
+	| delta segundosEfectivos segundosConEfecto |
 	(corriendo and: [ self seAgoto not ]) ifFalse: [ ^ self ].
-	
-	tiempoTranscurrido := (tiempoTranscurrido + (unosSegundos * factorVelocidad)) min: tiempoLimite.
-	
+
+	delta := unosSegundos max: 0.
+	delta = 0 ifTrue: [ ^ self ].
+	segundosEfectivos := delta.
+
 	self estaRalentizado ifTrue: [
-		segundosRalentizados := (segundosRalentizados - unosSegundos) max: 0.
-		segundosRalentizados = 0 ifTrue: [ factorVelocidad := 1.0 ].
-	].
+		"Solo se ralentiza la parte del intervalo que todavía está dentro del efecto."
+		segundosConEfecto := segundosRalentizados min: delta.
+		segundosEfectivos :=
+			(segundosConEfecto * factorVelocidad)
+				+ (delta - segundosConEfecto).
+		segundosRalentizados := (segundosRalentizados - delta) max: 0.
+		segundosRalentizados = 0 ifTrue: [ factorVelocidad := 1.0 ] ].
+
+	tiempoTranscurrido := tiempoTranscurrido + segundosEfectivos.
+	^ self
 ]
 
 { #category : 'accessing' }
@@ -93,13 +108,13 @@ Cronometro >> tiempoLimite [
 
 { #category : 'accessing' }
 Cronometro >> tiempoLimite: unosSegundos [
-	tiempoLimite := unosSegundos.
+	tiempoLimite := unosSegundos max: 0.
 ]
 
 { #category : 'initialization' }
 Cronometro >> tiempoRestante [
 	"Devuelve entero redondeado para mostrar limpio en pantalla"
-	^ ((tiempoLimite - tiempoTranscurrido) max: 0) ceiling.
+	^ (tiempoLimite - tiempoTranscurrido) ceiling max: 0.
 ]
 
 { #category : 'accessing' }

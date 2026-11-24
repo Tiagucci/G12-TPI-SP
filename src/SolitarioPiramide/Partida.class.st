@@ -28,18 +28,24 @@ Partida >> activarComboSeisSiete [
 { #category : 'actions' }
 Partida >> activarPoderReyEn: unaCasilla [
 	"Dispara el comodín K: elimina la carta y aplica uno de los 6 efectos al azar"
+	| efecto |
 	estado = #jugando ifFalse: [ ^ nil ].
+	piramide ifNil: [ ^ nil ].
+	(unaCasilla isNil or: [ (piramide casillas includes: unaCasilla) not ])
+		ifTrue: [ ^ nil ].
 	(unaCasilla esLibre and: [ unaCasilla carta esRey ]) ifFalse: [ ^ nil ].
 
 	unaCasilla eliminar.
+	puntaje sumarPorEliminacion: 1.
 	seleccion removeAll.
 
-	ultimoEfectoRey := EfectoRey aleatorio.
-	ultimoEfectoRey aplicarEn: self.
+	efecto := EfectoRey aleatorio.
+	ultimoEfectoRey := efecto.
+	efecto aplicarEn: self.
 
 	self verificarEstadoPartida.
 	self changed.
-	^ ultimoEfectoRey.
+	^ efecto.
 ]
 
 { #category : 'actions' }
@@ -204,7 +210,7 @@ Partida >> estaEnCamaraLenta [
 
 { #category : 'testing' }
 Partida >> estaGanada [
-	^ piramide estaVacia.
+	^ piramide notNil and: [ piramide estaVacia ].
 ]
 
 { #category : 'testing' }
@@ -221,6 +227,7 @@ Partida >> estado [
 { #category : 'testing' }
 Partida >> hayMovimientosPosibles [
 	| cartaVisible |
+	piramide ifNil: [ ^ false ].
 	piramide hayCombinacionPosible ifTrue: [ ^ true ].
 	(mazoAuxiliar estaVacio not or: [ mazoAuxiliar puedeReciclar ]) ifTrue: [ ^ true ].
 
@@ -228,12 +235,13 @@ Partida >> hayMovimientosPosibles [
 	cartaVisible ifNil: [ ^ false ].
 	cartaVisible esRey ifTrue: [ ^ true ].
 
-	^ piramide casillasLibres anySatisfy: [ :c | c carta suma13Con: cartaVisible ].
+	^ piramide casillasLibres
+		anySatisfy: [ :casilla | casilla carta suma13Con: cartaVisible ].
 ]
 
 { #category : 'initialization' }
 Partida >> iniciar [
-puntaje := Puntaje new.
+	puntaje := Puntaje new.
 	cronometro := Cronometro new.
 	seleccion removeAll.
 	ultimoEfectoRey := nil.
@@ -336,6 +344,7 @@ Partida >> seleccionar: unaCasilla [
 Partida >> seleccionarCartaDelMazo [
 	| cartaVisible cartas regla |
 	estado = #jugando ifFalse: [ ^ self ].
+	mazoAuxiliar ifNil: [ ^ self ].
 	cartaVisible := mazoAuxiliar cartaVisible.
 	cartaVisible ifNil: [ ^ self ].
 
@@ -348,6 +357,11 @@ Partida >> seleccionarCartaDelMazo [
 		^ self ].
 
 	seleccion size = 1 ifTrue: [
+		seleccion first esLibre ifFalse: [
+			puntaje reiniciarRacha.
+			seleccion removeAll.
+			self changed.
+			^ self ].
 		cartas := { seleccion first carta. cartaVisible }.
 		regla := self reglaPara: cartas.
 		(regla esValidaPara: cartas)

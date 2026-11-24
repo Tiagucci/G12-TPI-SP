@@ -17,7 +17,7 @@ Eliminacion67 >> aplicarEfectoExtraEn: unaPartida [
 Eliminacion67 >> esValidaPara: unasCartas [
 	| valores |
 	(super esValidaPara: unasCartas) ifFalse: [ ^ false ].
-	valores := unasCartas collect: [ :c | c valor ].
+	valores := unasCartas collect: [ :carta | carta valor ].
 	^ (valores includes: 6) and: [ valores includes: 7 ].
 
 ]

@@ -17,8 +17,8 @@ EfectoRey class >> aleatorio [
 	| opciones |
 	opciones := {
 		EfectoModificarTiempo segundos: 10.      "Bueno 1: +25s"
-		EfectoModificarTiempo segundos: -8.     "Malo 1: -20s"
-		EfectoEscalarPuntaje factor: 1.5.          "Bueno 2: Puntaje x2"
+		EfectoModificarTiempo segundos: -20.     "Malo 1: -20s"
+		EfectoEscalarPuntaje factor: 2.0.          "Bueno 2: Puntaje x2"
 		EfectoEscalarPuntaje factor: 0.5.        "Malo 2: Puntaje /2"
 		EfectoEliminarCartaLibre new.            "Bueno 3: Elimina 1 carta libre"
 		EfectoQuitarReciclaje new.               "Malo 3: Pierde 1 vuelta al mazo"
