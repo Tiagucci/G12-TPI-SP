@@ -1,3 +1,6 @@
+"
+Menu de inicio añadido
+"
 Class {
 	#name : 'AyudaMorph',
 	#superclass : 'Morph',
