@@ -1,6 +1,5 @@
 "
 Cronometro que al terminar se pierde, se puede pausar y reanudar y modificar con el uso de las K
--TERMINAR-LC
 18/11 agregado las cosas para el 67
 "
 Class {
