@@ -16,6 +16,57 @@ Class {
 	#package : 'SolitarioPiramide-UI'
 }
 
+{ #category : 'examples' }
+PartidaMorph class >> ejemploComboSeisSiete [
+	"Abre una partida y dispara el Combo 6-7 (Bullet-Time 0.5x + 67 puntos)."
+	<example>
+	| ventana |
+	ventana := self new.
+	ventana position: 80 @ 40.
+	ventana openInWorld.
+	ventana partida
+		iniciar;
+		activarComboSeisSiete.
+	^ ventana
+]
+
+{ #category : 'examples' }
+PartidaMorph class >> ejemploJuegoCompleto [
+	"Ejecutable principal: abre el juego completo arrancando desde el Menú de Inicio."
+	<example>
+	| ventana |
+	ventana := self new.
+	ventana position: 80 @ 40.
+	ventana openInWorld.
+	^ ventana
+]
+
+{ #category : 'examples' }
+PartidaMorph class >> ejemploPartidaEnCurso [
+	"Abre el tablero directamente en estado #jugando (saltea el menú de inicio)."
+	<example>
+	| ventana |
+	ventana := self new.
+	ventana position: 80 @ 40.
+	ventana openInWorld.
+	ventana partida iniciar.
+	^ ventana
+]
+
+{ #category : 'examples' }
+PartidaMorph class >> ejemploVictoria [
+	"Despeja toda la pirámide para mostrar el cartel de victoria, bonus por tiempo y récord."
+	<example>
+	| ventana |
+	ventana := self new.
+	ventana position: 80 @ 40.
+	ventana openInWorld.
+	ventana partida iniciar.
+	ventana partida piramide casillas do: [ :casilla | casilla eliminar ].
+	ventana partida avanzarTiempo: 0.
+	^ ventana
+]
+
 { #category : 'notifications' }
 PartidaMorph >> abrirAyuda [
 	ayudaMorph ifNotNil: [ ^ self ].
@@ -187,6 +238,11 @@ PartidaMorph >> mostrarNotificacion: unTexto esPositivo: unBooleano [
 
 	cartelNotificacion addMorph: label.
 	self addMorph: cartelNotificacion.
+]
+
+{ #category : 'accessing' }
+PartidaMorph >> partida [
+	^ partida
 ]
 
 { #category : 'stepping' }

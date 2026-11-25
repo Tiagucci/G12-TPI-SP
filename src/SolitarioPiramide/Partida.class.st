@@ -18,6 +18,38 @@ Class {
 	#package : 'SolitarioPiramide'
 }
 
+{ #category : 'examples' }
+Partida class >> ejemploPartidaConCombo67 [
+	"Devuelve una partida con el estado de cámara lenta y bonificación 6-7 activos."
+	<sampleInstance>
+	^ self new
+		iniciar;
+		activarComboSeisSiete;
+		yourself
+]
+
+{ #category : 'examples' }
+Partida class >> ejemploPartidaConPoderRey [
+	"Si hay un Rey libre en la base de la pirámide, activa su comodín aleatorio."
+	<sampleInstance>
+	| partida casillaRey |
+	partida := self new iniciar.
+	casillaRey := partida piramide casillasLibres
+		detect: [ :c | c carta esRey ]
+		ifNone: [ nil ].
+	casillaRey ifNotNil: [ partida activarPoderReyEn: casillaRey ].
+	^ partida
+]
+
+{ #category : 'examples' }
+Partida class >> ejemploPartidaIniciada [
+	"Devuelve una partida repartida y lista para inspeccionar pirámide y mazo."
+	<sampleInstance>
+	^ self new
+		iniciar;
+		yourself
+]
+
 { #category : 'actions' }
 Partida >> activarComboSeisSiete [
 	"Ralentiza el reloj a 0.5x durante 6 segundos reales (en el cronómetro avanzan 3s)"

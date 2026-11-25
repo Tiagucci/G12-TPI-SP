@@ -11,6 +11,21 @@ Class {
 	#package : 'SolitarioPiramide-UI'
 }
 
+{ #category : 'examples' }
+MenuInicioMorph class >> ejemploMenuAislado [
+	"Abre solo el menú de inicio con un récord de muestra."
+	<example>
+	| menu |
+	menu := self new.
+	menu record: 1250.
+	menu alIniciar: [ Transcript show: 'Click en Iniciar Partida'; cr ].
+	menu alPedirAyuda: [ Transcript show: 'Click en Cómo Jugar'; cr ].
+	menu alSalir: [ menu delete ].
+	menu position: 80 @ 40.
+	menu openInWorld.
+	^ menu
+]
+
 { #category : 'accessing' }
 MenuInicioMorph >> alIniciar: unBloque [
 	accionIniciar := unBloque.
